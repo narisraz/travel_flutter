@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_flutter/modules/core/shared/widgets/custom_text_field.dart';
 import 'package:travel_flutter/pages/auth/login/login_view_model.dart';
 
 class EmailField extends ConsumerWidget {
@@ -13,14 +12,16 @@ class EmailField extends ConsumerWidget {
       loginViewModelProvider.select((vm) => vm.emailError),
     );
 
-    return CustomTextField(
-      labelText: 'Email',
-      prefixIcon: Icons.email_outlined,
+    return TextFormField(
       initialValue: email,
       keyboardType: TextInputType.emailAddress,
-      errorText: emailError.fold(() => null, (error) => error),
       onChanged: (value) =>
           ref.read(loginViewModelProvider.notifier).updateEmail(value),
+      decoration: InputDecoration(
+        labelText: 'Email',
+        prefixIcon: const Icon(Icons.email_outlined),
+        errorText: emailError.fold(() => null, (error) => error),
+      ),
     );
   }
 }

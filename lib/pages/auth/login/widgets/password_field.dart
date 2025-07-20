@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_flutter/modules/core/shared/widgets/custom_text_field.dart';
 import 'package:travel_flutter/pages/auth/login/login_view_model.dart';
 
 class PasswordField extends ConsumerWidget {
@@ -19,17 +18,21 @@ class PasswordField extends ConsumerWidget {
     );
     final loginViewModel = ref.read(loginViewModelProvider.notifier);
 
-    return CustomTextField(
-      labelText: 'Mot de passe',
-      prefixIcon: Icons.lock_outlined,
+    return TextFormField(
       initialValue: password,
       obscureText: !isPasswordVisible,
-      errorText: passwordError.fold(() => null, (error) => error),
-      suffixIcon: Icon(
-        isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-      ),
       onChanged: (value) => loginViewModel.updatePassword(value),
-      onSuffixIconPressed: () => loginViewModel.togglePasswordVisibility(),
+      decoration: InputDecoration(
+        labelText: 'Mot de passe',
+        prefixIcon: const Icon(Icons.lock_outlined),
+        errorText: passwordError.fold(() => null, (error) => error),
+        suffixIcon: IconButton(
+          icon: Icon(
+            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () => loginViewModel.togglePasswordVisibility(),
+        ),
+      ),
     );
   }
 }

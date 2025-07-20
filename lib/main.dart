@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_flutter/modules/core/config/env_config.dart';
+import 'package:travel_flutter/modules/core/theme/app_theme.dart';
 import 'package:travel_flutter/pages/auth/login/login_page.dart';
 import 'package:travel_flutter/pages/home/home_page.dart';
 
@@ -17,10 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Travel Flutter',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF667eea)),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),

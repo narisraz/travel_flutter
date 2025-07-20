@@ -1,9 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:travel_flutter/modules/auth/application/use_cases/login.dart';
 import 'package:travel_flutter/modules/auth/domain/value_objects/email.dart';
 import 'package:travel_flutter/modules/auth/domain/value_objects/password.dart';
+import 'package:travel_flutter/modules/auth/infrastructure/providers/auth_providers.dart';
 
-// État de connexion
+part 'login_notifier.g.dart';
+
 sealed class LoginState {
   const LoginState();
 }
@@ -26,20 +28,19 @@ class LoginError extends LoginState {
   const LoginError(this.message);
 }
 
-// Notifier pour gérer l'état de connexion
-class LoginNotifier extends StateNotifier<LoginState> {
-  final Login _loginUseCase;
-
-  LoginNotifier(this._loginUseCase) : super(const LoginInitial());
+@riverpod
+class LoginNotifier extends _$LoginNotifier {
+  @override
+  LoginState build() {
+    return const LoginInitial();
+  }
 
   Future<void> login(Email email, Password password) async {
     state = const LoginLoading();
 
     try {
-      final result = await _loginUseCase.login(
-        email: email,
-        password: password,
-      );
+      final loginUseCase = ref.read(loginUseCaseProvider);
+      final result = await loginUseCase.login(email: email, password: password);
 
       result.fold((error) {
         if (error is BadCredentialsError) {

@@ -1,96 +1,67 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:travel_flutter/modules/auth/domain/value_objects/email.dart';
 import 'package:travel_flutter/modules/auth/domain/value_objects/password.dart';
-import 'package:travel_flutter/modules/auth/presentation/notifiers/login_notifier.dart';
-import 'package:travel_flutter/modules/auth/infrastructure/providers/auth_providers.dart';
+import 'package:travel_flutter/modules/auth/infrastructure/notifiers/login_notifier.dart';
+import 'package:travel_flutter/pages/auth/login/login_view_state.dart';
+import 'package:fpdart/fpdart.dart';
 
-class LoginViewModel extends ChangeNotifier {
-  final LoginNotifier _loginNotifier;
+part 'login_view_model.g.dart';
 
-  LoginViewModel(this._loginNotifier);
+@riverpod
+class LoginViewModel extends _$LoginViewModel {
+  @override
+  LoginViewState build() => const LoginViewState();
 
-  // État local du ViewModel
-  String _email = '';
-  String _password = '';
-  String? _emailError;
-  String? _passwordError;
-  bool _isPasswordVisible = false;
-
-  // Getters
-  String get email => _email;
-  String get password => _password;
-  String? get emailError => _emailError;
-  String? get passwordError => _passwordError;
-  bool get isPasswordVisible => _isPasswordVisible;
-
-  // Méthodes pour mettre à jour l'état
   void updateEmail(String email) {
-    _email = email;
-    _clearEmailError();
-    notifyListeners();
+    state = state.copyWith(email: email, emailError: const None());
   }
 
   void updatePassword(String password) {
-    _password = password;
-    _clearPasswordError();
-    notifyListeners();
+    state = state.copyWith(password: password, passwordError: const None());
   }
 
   void togglePasswordVisibility() {
-    _isPasswordVisible = !_isPasswordVisible;
-    notifyListeners();
-  }
-
-  void _clearEmailError() {
-    if (_emailError != null) {
-      _emailError = null;
-    }
-  }
-
-  void _clearPasswordError() {
-    if (_passwordError != null) {
-      _passwordError = null;
-    }
+    state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
   }
 
   void clearAllErrors() {
-    _emailError = null;
-    _passwordError = null;
-    notifyListeners();
+    state = state.copyWith(
+      emailError: const None(),
+      passwordError: const None(),
+    );
   }
 
-  // Validation avec les value objects
   bool validateEmail() {
     try {
-      Email(value: _email.trim());
-      _emailError = null;
+      Email(value: state.email.trim());
+      state = state.copyWith(emailError: const None());
       return true;
     } catch (e) {
-      _emailError = 'Veuillez saisir un email valide';
-      notifyListeners();
+      state = state.copyWith(
+        emailError: Some('Veuillez saisir un email valide'),
+      );
       return false;
     }
   }
 
   bool validatePassword() {
     try {
-      Password(value: _password);
-      _passwordError = null;
+      Password(value: state.password);
+      state = state.copyWith(passwordError: const None());
       return true;
     } catch (e) {
-      _passwordError = 'Le mot de passe doit contenir au moins 8 caractères';
-      notifyListeners();
+      state = state.copyWith(
+        passwordError: Some(
+          'Le mot de passe doit contenir au moins 8 caractères',
+        ),
+      );
       return false;
     }
   }
 
-  // Méthode principale de connexion
   Future<void> login() async {
-    // Réinitialiser les erreurs
     clearAllErrors();
 
-    // Valider les champs
     final isEmailValid = validateEmail();
     final isPasswordValid = validatePassword();
 
@@ -98,21 +69,15 @@ class LoginViewModel extends ChangeNotifier {
       return;
     }
 
-    // Créer les value objects
-    final emailValue = Email(value: _email.trim());
-    final passwordValue = Password(value: _password);
+    final emailValue = Email(value: state.email.trim());
+    final passwordValue = Password(value: state.password);
 
-    // Procéder à la connexion
-    await _loginNotifier.login(emailValue, passwordValue);
+    final loginNotifier = ref.read(loginNotifierProvider.notifier);
+    await loginNotifier.login(emailValue, passwordValue);
   }
 
   void reset() {
-    _loginNotifier.reset();
+    final loginNotifier = ref.read(loginNotifierProvider.notifier);
+    loginNotifier.reset();
   }
 }
-
-// Provider pour le ViewModel
-final loginViewModelProvider = ChangeNotifierProvider<LoginViewModel>((ref) {
-  final loginNotifier = ref.watch(loginStateProvider.notifier);
-  return LoginViewModel(loginNotifier);
-});

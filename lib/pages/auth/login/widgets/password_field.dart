@@ -16,7 +16,7 @@ class PasswordField extends ConsumerWidget {
     final isPasswordVisible = ref.watch(
       loginViewModelProvider.select((vm) => vm.isPasswordVisible),
     );
-    final loginViewModel = ref.watch(loginViewModelProvider);
+    final loginViewModel = ref.read(loginViewModelProvider.notifier);
 
     return TextFormField(
       initialValue: password,
@@ -25,7 +25,7 @@ class PasswordField extends ConsumerWidget {
       decoration: InputDecoration(
         labelText: 'Mot de passe',
         prefixIcon: const Icon(Icons.lock_outlined),
-        errorText: passwordError,
+        errorText: passwordError.fold(() => null, (error) => error),
         suffixIcon: IconButton(
           icon: Icon(
             isPasswordVisible ? Icons.visibility_off : Icons.visibility,

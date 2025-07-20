@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_flutter/modules/auth/infrastructure/providers/auth_providers.dart';
-import 'package:travel_flutter/modules/auth/presentation/notifiers/login_notifier.dart';
+import 'package:travel_flutter/modules/auth/infrastructure/notifiers/login_notifier.dart';
 import 'package:travel_flutter/pages/home/home_view_model.dart';
 
 class HomePage extends ConsumerWidget {
@@ -9,8 +8,8 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(homeViewModelProvider);
-    final loginState = ref.watch(loginStateProvider);
+    final viewModel = ref.watch(homeViewModelProvider.notifier);
+    final loginState = ref.watch(loginNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(

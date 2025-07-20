@@ -1,0 +1,1 @@
+class InvalidEmailError extends Error {}

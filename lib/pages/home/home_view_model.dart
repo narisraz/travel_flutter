@@ -1,21 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_flutter/modules/auth/presentation/notifiers/login_notifier.dart';
-import 'package:travel_flutter/modules/auth/infrastructure/providers/auth_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:travel_flutter/pages/home/home_view_state.dart';
 
-class HomeViewModel extends ChangeNotifier {
-  final LoginNotifier _loginNotifier;
+part 'home_view_model.g.dart';
 
-  HomeViewModel(this._loginNotifier);
+@riverpod
+class HomeViewModel extends _$HomeViewModel {
+  @override
+  HomeViewModelState build() => const HomeViewModelState();
 
-  // Méthodes
   void logout() {
-    _loginNotifier.reset();
+    state = state.copyWith(isAuthenticated: false, token: null);
   }
 }
-
-// Provider pour le ViewModel
-final homeViewModelProvider = ChangeNotifierProvider<HomeViewModel>((ref) {
-  final loginNotifier = ref.watch(loginStateProvider.notifier);
-  return HomeViewModel(loginNotifier);
-});

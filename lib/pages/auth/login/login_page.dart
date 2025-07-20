@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_flutter/modules/auth/presentation/notifiers/login_notifier.dart';
-import 'package:travel_flutter/modules/auth/infrastructure/providers/auth_providers.dart';
+import 'package:travel_flutter/modules/auth/infrastructure/notifiers/login_notifier.dart';
 import 'package:travel_flutter/pages/auth/login/login_view_model.dart';
 import 'package:travel_flutter/pages/auth/login/widgets/email_field.dart';
 import 'package:travel_flutter/pages/auth/login/widgets/password_field.dart';
@@ -18,7 +17,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loginState = ref.watch(loginStateProvider);
+    final loginState = ref.watch(loginNotifierProvider);
 
     // Navigation automatique vers la page d'accueil après connexion réussie
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -96,7 +95,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    loginState.message,
+                                    (loginState as LoginError).message,
                                     style: TextStyle(
                                       color: Colors.red.shade700,
                                       fontSize: 14,

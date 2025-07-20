@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_flutter/modules/core/shared/widgets/custom_text_field.dart';
 import 'package:travel_flutter/pages/auth/login/login_view_model.dart';
 
 class PasswordField extends ConsumerWidget {
@@ -18,35 +19,17 @@ class PasswordField extends ConsumerWidget {
     );
     final loginViewModel = ref.read(loginViewModelProvider.notifier);
 
-    return TextFormField(
+    return CustomTextField(
+      labelText: 'Mot de passe',
+      prefixIcon: Icons.lock_outlined,
       initialValue: password,
       obscureText: !isPasswordVisible,
-      onChanged: (value) => loginViewModel.updatePassword(value),
-      decoration: InputDecoration(
-        labelText: 'Mot de passe',
-        prefixIcon: const Icon(Icons.lock_outlined),
-        errorText: passwordError.fold(() => null, (error) => error),
-        errorMaxLines: 2,
-        suffixIcon: IconButton(
-          icon: Icon(
-            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-          ),
-          onPressed: () => loginViewModel.togglePasswordVisibility(),
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF667eea), width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
+      errorText: passwordError.fold(() => null, (error) => error),
+      suffixIcon: Icon(
+        isPasswordVisible ? Icons.visibility_off : Icons.visibility,
       ),
+      onChanged: (value) => loginViewModel.updatePassword(value),
+      onSuffixIconPressed: () => loginViewModel.togglePasswordVisibility(),
     );
   }
 }

@@ -8,9 +8,11 @@ import '../../domain/repositories/fake_auth_repository.dart';
 
 void main() {
   late Login loginUseCase;
+  late FakeAuthRepository authRepository;
 
   setUp(() {
-    loginUseCase = Login(authRepository: FakeAuthRepository());
+    authRepository = FakeAuthRepository();
+    loginUseCase = Login(authRepository: authRepository);
   });
 
   test(
@@ -57,6 +59,22 @@ void main() {
       // Assert
       expect(result.isLeft(), isTrue);
       expect(result.fold((l) => l, (r) => r), isA<BadCredentialsError>());
+    },
+  );
+
+  test(
+    'given a valid email and password, when the user logs in, should save the token',
+    () async {
+      // Arrange
+      final email = Email(value: validEmail);
+      final password = Password(value: validPassword);
+
+      // Act
+      await loginUseCase.login(email: email, password: password);
+      final token = await authRepository.getToken();
+
+      // Assert
+      expect(token, Some('token'));
     },
   );
 }

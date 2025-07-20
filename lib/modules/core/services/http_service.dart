@@ -37,4 +37,26 @@ class HttpService {
       return Left('Erreur de connexion: $e');
     }
   }
+
+  Future<Either<String, Map<String, dynamic>>> get(
+    String endpoint, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final uri = buildUri(endpoint);
+      final response = await http.get(
+        uri,
+        headers: {'Content-Type': 'application/json', ...?headers},
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        return Right(data);
+      } else {
+        return Left('Erreur HTTP: ${response.statusCode}');
+      }
+    } catch (e) {
+      return Left('Erreur de connexion: $e');
+    }
+  }
 }

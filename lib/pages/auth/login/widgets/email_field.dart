@@ -21,6 +21,7 @@ class EmailField extends ConsumerWidget {
         labelText: 'Email',
         prefixIcon: const Icon(Icons.email_outlined),
         errorText: emailError.fold(() => null, (error) => error),
+        errorMaxLines: 2,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

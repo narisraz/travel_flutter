@@ -5,4 +5,7 @@ abstract class AuthRepository {
     required String email,
     required String password,
   });
+  Future<Option<String>> getToken();
+  Future<void> saveToken(String token);
+  Future<bool> checkToken();
 }

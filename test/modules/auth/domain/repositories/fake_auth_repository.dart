@@ -5,8 +5,16 @@ final validEmail = 'test@test.com';
 final validPassword = 'password';
 final invalidEmail = 'invalid@test.com';
 final invalidPassword = 'invalid-password';
+final validToken = 'token';
+final invalidToken = 'invalid-token';
 
 class FakeAuthRepository implements AuthRepository {
+  String _token = validToken;
+
+  FakeAuthRepository() {
+    saveToken(_token);
+  }
+
   @override
   Future<Option<String>> login({
     required String email,
@@ -15,6 +23,21 @@ class FakeAuthRepository implements AuthRepository {
     if (email == invalidEmail || password == invalidPassword) {
       return none();
     }
-    return some('token');
+    return some(_token);
+  }
+
+  @override
+  Future<Option<String>> getToken() async {
+    return some(_token);
+  }
+
+  @override
+  Future<void> saveToken(String token) async {
+    _token = token;
+  }
+
+  @override
+  Future<bool> checkToken() async {
+    return _token != invalidToken;
   }
 }

@@ -32,7 +32,10 @@ class Login {
     );
     return token.fold(
       () => left(BadCredentialsError(message: 'Bad credentials')),
-      (token) => right(LoginSuccess(token: token)),
+      (token) {
+        authRepository.saveToken(token);
+        return right(LoginSuccess(token: token));
+      },
     );
   }
 }

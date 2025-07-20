@@ -26,6 +26,7 @@ class PasswordField extends ConsumerWidget {
         labelText: 'Mot de passe',
         prefixIcon: const Icon(Icons.lock_outlined),
         errorText: passwordError.fold(() => null, (error) => error),
+        errorMaxLines: 2,
         suffixIcon: IconButton(
           icon: Icon(
             isPasswordVisible ? Icons.visibility_off : Icons.visibility,
